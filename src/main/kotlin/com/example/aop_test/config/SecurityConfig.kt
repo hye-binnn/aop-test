@@ -29,7 +29,7 @@ class SecurityConfig {
 
     @Bean
     fun userDetailsService(): UserDetailsService {
-        val user = User.withUsername("user2")
+        val user = User.withUsername("user1")
             .password("{noop}pwd") // 테스트용
             .roles("USER")
             .build()

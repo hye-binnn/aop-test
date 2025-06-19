@@ -1,26 +1,18 @@
 package com.example.aop_test.service
 
-import com.example.aop_test.context.AccessibleDataSourceContext
-import com.example.aop_test.domain.DataSource
-import com.example.aop_test.domain.DataSourceType
-import com.example.aop_test.domain.Project
-import com.example.aop_test.domain.Task
+import com.example.aop_test.domain.*
 import org.springframework.stereotype.Service
 
 @Service
-class ProjectService(
-    private val context: AccessibleDataSourceContext
-) {
+class ProjectService {
     fun getProject(id: Long): Project? = InMemoryStorage.projects.first { it.id == id }
 
-    fun getAllTasks(): List<Task> {
-        val accessibleDataSourceIds = context.accessibleDataSourceIds
-
-        // 실제로는 ids 가지고 repo filtering 된 페이지 데이터 반환
+    fun getAllTasks(ids: List<Long>): List<Task> {
         val filteredTasks = InMemoryStorage.tasks
-            .filter { it.project.dataSource.id in accessibleDataSourceIds }
+            .filter { it.project.id in ids }
 
-        return filteredTasks}
+        return filteredTasks
+    }
 }
 
 
@@ -31,14 +23,12 @@ object InMemoryStorage {
             type = DataSourceType.SLACK,
             content = "Public DataSource",
             isPrivate = false,
-            members = emptyList()
         ),
         DataSource(
             id = 2L,
             type = DataSourceType.SLACK,
             content = "Private DS (user1 only)",
             isPrivate = true,
-            members = listOf("user1")
         ),
         // user1일 때는 접근 불가능
         DataSource(
@@ -46,7 +36,6 @@ object InMemoryStorage {
             type = DataSourceType.SLACK,
             content = "Private DS (user2, user3)",
             isPrivate = true,
-            members = listOf("user2", "user3")
         )
     )
 
@@ -98,6 +87,47 @@ object InMemoryStorage {
             id = 6L,
             name = "Task 6",
             project = projects[2]
+        )
+    )
+
+    val index = listOf(
+        Index(
+            id = 1L,
+            name = "Index Task A",
+            dataSource = dataSources[0]
+        ),
+        Index(
+            id = 2L,
+            name = "Index Task B",
+            dataSource = dataSources[1]
+        ),
+        Index(
+            id = 3L,
+            name = "Index Task C",
+            dataSource = dataSources[2]
+        ),
+        Index(
+            id = 4L,
+            name = "Index Task D",
+            dataSource = dataSources[2]
+        )
+    )
+
+    val accessibility = listOf(
+        DataSourceAccessibility(
+            id = 2L,
+            dataSource = dataSources[1],
+            username = "user1"
+        ),
+        DataSourceAccessibility(
+            id = 3L,
+            dataSource = dataSources[2],
+            username = "user2"
+        ),
+        DataSourceAccessibility(
+            id = 4L,
+            dataSource = dataSources[2],
+            username = "user3"
         )
     )
 }

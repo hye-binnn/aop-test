@@ -5,7 +5,12 @@ data class DataSource(
     val type: DataSourceType,
     val content: String,
     val isPrivate: Boolean,
-    val members: List<String>
+)
+
+data class DataSourceAccessibility(
+    val id: Long,
+    val dataSource: DataSource,
+    val username: String
 )
 
 data class Project(
@@ -20,7 +25,14 @@ data class Task(
     val project: Project,
 )
 
+data class Index(
+    val id: Long,
+    val name: String,
+    val dataSource: DataSource
+)
+
 enum class DataSourceType {
     SLACK,
-    JIRA
+    GITHUB,
+    JIRA,
 }

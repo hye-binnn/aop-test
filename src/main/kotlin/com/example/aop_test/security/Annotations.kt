@@ -1,14 +1,12 @@
 package com.example.aop_test.security
 
-import com.example.aop_test.domain.DataSourceType
+import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class CheckDataAccess(
-    val dataSourceType: DataSourceType,
-    val idParam: String
+    val resourceType: KClass<*>,
+    val resourceIdParam: String = "id",
+    val resourceIdsParam: String = "ids",
+    val userIdParam: String = "userId",
 )
-
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ResolveAccessibleDataSourceIds
